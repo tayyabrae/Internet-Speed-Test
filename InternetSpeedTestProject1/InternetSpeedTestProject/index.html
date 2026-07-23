@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HT Internet Speed</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+       <div class="loader-widget">
+        <h1>CHECK YOUR INTERNET SPEED</h1>
+        <span class="loader hide"></span>
+        <div class="loader-content">
+            <div class="content">24<small>Mbps</small></div>
+            <button>CHECK</button>
+        </div>
+       </div>  
+    </div> 
+    <script>
+        document.querySelector('button').addEventListener('click', (e) => {
+            // Show loader and hide content initially
+            document.querySelector('.content').classList.add('hide');
+            document.querySelector('.loader').classList.remove('hide');
+
+            // Set initial variables
+            let timeStart, timeEnd;
+            const imageLink = 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG'; // Image for download test
+            const downloadSize = 8185374; // Size of the image in bytes (8.1 MB)
+            const downloadImg = new Image();
+
+            // Start timing the download when we begin
+            timeStart = new Date().getTime();
+            const cacheBuster = "?nn=" + timeStart; // Adding cache buster to avoid cached results
+            downloadImg.src = imageLink + cacheBuster;
+
+            // On successful image download
+            downloadImg.onload = function () {
+                timeEnd = new Date().getTime();
+
+                // Calculate time duration in seconds
+                const timeDuration = (timeEnd - timeStart) / 1000;
+
+                // Convert size to bits and calculate Mbps
+                const bitsLoaded = downloadSize * 8; // Convert bytes to bits
+                const speedMbps = (bitsLoaded / timeDuration / 1024 / 1024).toFixed(2); // Mbps calculation
+
+                // Update content with calculated speed and hide loader
+                document.querySelector('.content').innerHTML = `${speedMbps} <small>Mbps</small>`;
+                document.querySelector('.loader-content').classList.add('result');
+                document.querySelector('.loader').classList.add('hide');
+                document.querySelector('.content').classList.remove('hide');
+
+                // Change button text to "CHECK AGAIN"
+                e.target.innerText = 'CHECK AGAIN';
+            };
+
+            // If there's an error loading the image, display an error message
+            downloadImg.onerror = function () {
+                document.querySelector('.content').innerHTML = "Error loading the image. Please try again.";
+                document.querySelector('.loader').classList.add('hide');
+                document.querySelector('.content').classList.remove('hide');
+            };
+        });
+    </script>
+</body>
+</html>
